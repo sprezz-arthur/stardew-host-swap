@@ -16,10 +16,16 @@ def editor(request):
         return render(request, "editor.html", context)
 
     file_content = file.read().decode("utf-8")
+
     context["file_content"] = file_content
     context["file_name"] = file.name
-    host_data = get_host_data(file_content)
+    
     players_data = get_players_data(file_content)
+    host_data = get_host_data(file_content)
+
+    assert players_data
+    assert host_data
+
     farmers = [get_name(player) for player in [host_data, *players_data]]
 
     context["farmers"] = farmers

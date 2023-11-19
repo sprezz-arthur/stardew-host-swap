@@ -1,7 +1,7 @@
 import re
 
-
-def get_host_data(input_string: str) -> str:
+# TODO: figure out why this does not work when input_string is too large
+def _get_host_data(input_string: str) -> str:
     pattern = r"<player>(.*?)<\/player>"
     match = re.search(pattern, input_string)
 
@@ -9,6 +9,9 @@ def get_host_data(input_string: str) -> str:
         return match.group(1)
     else:
         return None
+
+def get_host_data(input_string: str) -> str:
+    return input_string.split('<player>')[1].split('</player>')[0]
 
 
 def get_players_data(input_string: str) -> list[str]:
