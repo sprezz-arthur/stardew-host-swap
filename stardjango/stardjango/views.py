@@ -39,7 +39,6 @@ def download_file(request):
         old_host_data = get_host_data(old_file_content)
 
         new_host_data = get_players_data(old_file_content)[selected_farmer_id - 1]
-        new_host_data = add_mails(taker_data=new_host_data, giver_data=old_host_data)
 
         new_file_content = new_file_content.replace(
             old_host_data, OLD_HOST_DATA_PLACEHOLDER
@@ -48,12 +47,24 @@ def download_file(request):
             new_host_data, NEW_HOST_DATA_PLACEHOLDER
         )
 
+        # Otherwise Community Center (and possibliy other things) can get locked
+        new_host_data = add_mails(taker_data=new_host_data, giver_data=old_host_data)
+
+        assert OLD_HOST_DATA_PLACEHOLDER in new_file_content
+        assert NEW_HOST_DATA_PLACEHOLDER in new_file_content
+
         new_file_content = new_file_content.replace(
             OLD_HOST_DATA_PLACEHOLDER, new_host_data
         )
         new_file_content = new_file_content.replace(
             NEW_HOST_DATA_PLACEHOLDER, old_host_data
         )
+
+        assert OLD_HOST_DATA_PLACEHOLDER not in new_file_content
+        assert NEW_HOST_DATA_PLACEHOLDER not in new_file_content
+        
+        assert get_name(old_host_data) in new_file_content
+        assert get_name(new_host_data) in new_file_content
 
         response = HttpResponse(new_file_content, content_type="text/plain")
         response["Content-Disposition"] = f"attachment; filename={file_name}"
