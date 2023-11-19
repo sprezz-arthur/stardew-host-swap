@@ -37,8 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 ]
 
-MIDDLEWARE = [
-]
+MIDDLEWARE = []
 
 ROOT_URLCONF = "stardjango.urls"
 

@@ -1,5 +1,6 @@
 import re
 
+
 # TODO: figure out why this does not work when input_string is too large
 def _get_host_data(input_string: str) -> str:
     pattern = r"<player>(.*?)<\/player>"
@@ -10,8 +11,9 @@ def _get_host_data(input_string: str) -> str:
     else:
         return None
 
+
 def get_host_data(input_string: str) -> str:
-    return input_string.split('<player>')[1].split('</player>')[0]
+    return input_string.split("<player>")[1].split("</player>")[0]
 
 
 def get_players_data(input_string: str) -> list[str]:
@@ -67,3 +69,8 @@ def add_community_center_mails(giver_data: str, taker_data: str) -> str:
         if cc_mail not in taker_mails:
             taker_mails += [cc_mail]
     return "<mailReceived>" + "".join(taker_mails) + "</mailReceived>"
+
+
+def get_home_data(player_data: str) -> str:
+    home = player_data.split("<homeLocation>")[1].split("</homeLocation>")[0]
+    return f"<homeLocation>{home}</homeLocation>"

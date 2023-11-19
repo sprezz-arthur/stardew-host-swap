@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse
-from .utils import get_host_data, get_players_data, get_name, add_mails
+from .utils import get_host_data, get_players_data, get_name, add_mails, get_home_data
 
 OLD_HOST_DATA_PLACEHOLDER = "</ OLD_HOST_DATA>"
 NEW_HOST_DATA_PLACEHOLDER = "</ NEW_HOST_DATA>"
@@ -19,7 +19,7 @@ def editor(request):
 
     context["file_content"] = file_content
     context["file_name"] = file.name
-    
+
     players_data = get_players_data(file_content)
     host_data = get_host_data(file_content)
 
@@ -43,14 +43,22 @@ def download_file(request):
         new_file_content = old_file_content
 
         old_host_data = get_host_data(old_file_content)
-
         new_host_data = get_players_data(old_file_content)[selected_farmer_id - 1]
+
 
         new_file_content = new_file_content.replace(
             old_host_data, OLD_HOST_DATA_PLACEHOLDER
         )
         new_file_content = new_file_content.replace(
             new_host_data, NEW_HOST_DATA_PLACEHOLDER
+        )
+
+        old_home_data = get_home_data(old_host_data)
+        new_home_data = get_home_data(new_host_data)
+
+        old_host_data, new_host_data = (
+            old_host_data.replace(old_home_data, new_home_data),
+            new_host_data.replace(new_home_data, old_home_data),
         )
 
         # Otherwise Community Center (and possibliy other things) can get locked
@@ -68,7 +76,7 @@ def download_file(request):
 
         assert OLD_HOST_DATA_PLACEHOLDER not in new_file_content
         assert NEW_HOST_DATA_PLACEHOLDER not in new_file_content
-        
+
         assert get_name(old_host_data) in new_file_content
         assert get_name(new_host_data) in new_file_content
 
