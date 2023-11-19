@@ -1,0 +1,68 @@
+<!-- templates/upload_and_select.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Upload Game File</title>
+</head>
+<body class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h2 class="text-center mb-4">Upload Game File</h2>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="file">Choose a file:</label>
+                    <input type="file" class="form-control-file" name="file" id="file">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Upload</button>
+            </form>
+
+            {% if file_content %}
+                <div class="mt-4">
+                    <h3>File Content:</h3>
+                    <textarea class="form-control" rows="10">{{ file_content }}</textarea>
+                </div>
+
+                <div class="form-group mt-4">
+                    <h3>Select New Host Farmer:</h3>
+                    <select class="form-control" id="selectFarmer" name="new_selected_farmer_id" onchange="selectNewFarmer(this)">
+                        {% for farmer in farmers %}
+                            <option value="{{ forloop.counter }}" {% if forloop.counter == new_selected_farmer_id %}selected{% endif %}>{{ farmer }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <script>
+                    function selectNewFarmer(selectElement) {
+                        console.log('Selected index: ', selectElement.value - 1)
+                        document.getElementById("selectedFarmerId").value = selectElement.value - 1
+                    }
+                </script>
+                    
+                <div class="mt-4">
+                    <h3>Download File:</h3>
+                    <form method="post" action="{% url 'download_file' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="file_name" value="{{ file_name }}">
+                        <input type="hidden" name="file_content" value="{{ file_content }}">
+                        <input type="hidden" name="selected_farmer_id" id="selectedFarmerId" value="{{ selected_farmer_id }}">
+                        <button type="submit" class="btn btn-success">Download</button>
+                    </form>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>
