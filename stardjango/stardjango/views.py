@@ -5,6 +5,7 @@ from stardjango.utils import (
     get_name,
     add_mails,
     get_home_data,
+    add_events,
 )
 
 OLD_HOST_DATA_PLACEHOLDER = "</ OLD_HOST_DATA>"
@@ -68,6 +69,11 @@ def download_file(request):
 
         # Otherwise Community Center (and possibliy other things) can get locked
         new_host_data = add_mails(
+            giver_data=old_host_data,
+            taker_data=new_host_data,
+        )
+
+        new_host_data = add_events(
             giver_data=old_host_data,
             taker_data=new_host_data,
         )
